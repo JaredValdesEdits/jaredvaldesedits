@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JaredValdesEdits</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #080808;
+      --deep: #0e0e0e;
+      --panel: #131313;
+      --border: #222222;
+      --gold: #c9a84c;
+      --gold-dim: #8a6e30;
+      --white: #f0ede8;
+      --muted: #666666;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: crosshair;
+    }
+
+    /* GRAIN OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.35;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 3rem;
+      background: linear-gradient(to bottom, rgba(8,8,8,0.95), transparent);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 3rem 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 70% 40%, rgba(201,168,76,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 20% 80%, rgba(201,168,76,0.04) 0%, transparent 60%),
+        linear-gradient(160deg, #0e0e0e 0%, #080808 100%);
+    }
+
+    /* Cinematic letterbox lines */
+    .hero::before, .hero::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      height: 80px;
+      background: var(--black);
+      z-index: 2;
+    }
+    .hero::before { top: 0; }
+    .hero::after { bottom: 0; }
+
+    .hero-content {
+      position: relative;
+      z-index: 3;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(4rem, 12vw, 10rem);
+      line-height: 0.9;
+      letter-spacing: 0.02em;
+      color: var(--white);
+      opacity: 0;
+      animation: fadeUp 0.8s 0.5s forwards;
+    }
+
+    .hero-title span {
+      color: var(--gold);
+      display: block;
+    }
+
+    .hero-sub {
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+      max-width: 400px;
+      line-height: 1.8;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.7s forwards;
+    }
+
+    .hero-cta {
+      margin-top: 2.5rem;
+      display: inline-block;
+      padding: 0.9rem 2.5rem;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      text-decoration: none;
+      font-size: 0.75rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      transition: all 0.3s;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.9s forwards;
+    }
+
+    .hero-cta:hover {
+      background: var(--gold);
+      color: var(--black);
+    }
+
+    /* REEL SECTION */
+    .reel {
+      padding: 8rem 3rem;
+      position: relative;
+    }
+
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      letter-spacing: 0.03em;
+      line-height: 1;
+      margin-bottom: 3rem;
+    }
+
+    .reel-placeholder {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .reel-placeholder::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201,168,76,0.03) 0%, transparent 60%);
+    }
+
+    .play-btn {
+      width: 70px; height: 70px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      font-size: 1.5rem;
+      transition: all 0.3s;
+    }
+
+    .play-btn:hover {
+      background: var(--gold);
+      color: var(--black);
+      transform: scale(1.05);
+    }
+
+    .reel-placeholder p {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* SERVICES */
+    .services {
+      padding: 8rem 3rem;
+      background: var(--deep);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1px;
+      margin-top: 4rem;
+      border: 1px solid var(--border);
+    }
+
+    .service-card {
+      padding: 3rem 2rem;
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      transition: background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 2px;
+      height: 0;
+      background: var(--gold);
+      transition: height 0.4s;
+    }
+
+    .service-card:hover::before { height: 100%; }
+    .service-card:hover { background: #161616; }
+
+    .service-number {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      color: var(--border);
+      line-height: 1;
+      margin-bottom: 1.5rem;
+      transition: color 0.3s;
+    }
+
+    .service-card:hover .service-number { color: var(--gold-dim); }
+
+    .service-name {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.8rem;
+    }
+
+    .service-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .service-price {
+      margin-top: 1.5rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+
+    /* ABOUT */
+    .about {
+      padding: 8rem 3rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+    }
+
+    .about-text p {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 2;
+      margin-bottom: 1.2rem;
+    }
+
+    .about-text p strong {
+      color: var(--white);
+      font-weight: 500;
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .stat {
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+    }
+
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.4rem;
+    }
+
+    /* CONTACT */
+    .contact {
+      padding: 8rem 3rem;
+      background: var(--deep);
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .contact-title {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 7rem);
+      letter-spacing: 0.03em;
+      line-height: 1;
+      margin-bottom: 1.5rem;
+    }
+
+    .contact-title span { color: var(--gold); }
+
+    .contact-sub {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 3rem;
+      letter-spacing: 0.05em;
+    }
+
+    .contact-email {
+      display: inline-block;
+      font-family: var(--font-display);
+      font-size: clamp(1rem, 2.5vw, 1.8rem);
+      letter-spacing: 0.1em;
+      color: var(--white);
+      text-decoration: none;
+      border-bottom: 1px solid var(--gold);
+      padding-bottom: 0.3rem;
+      transition: color 0.3s;
+    }
+
+    .contact-email:hover { color: var(--gold); }
+
+    .contact-socials {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .contact-socials a {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .contact-socials a:hover { color: var(--gold); }
+
+    /* FOOTER */
+    footer {
+      padding: 2rem 3rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer p {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    footer span { color: var(--gold); }
+
+    /* SCROLLING TICKER */
+    .ticker {
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+      background: var(--panel);
+    }
+
+    .ticker-inner {
+      display: flex;
+      gap: 4rem;
+      animation: ticker 20s linear infinite;
+      white-space: nowrap;
+    }
+
+    .ticker-item {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .ticker-item span { color: var(--gold); margin: 0 1rem; }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { padding: 0 1.5rem 5rem; }
+      .reel, .services, .contact { padding: 5rem 1.5rem; }
+      .about {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+        padding: 5rem 1.5rem;
+      }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">JVE</a>
+    <ul class="nav-links">
+      <li><a href="#reel">Reel</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Video Editor — Dallas, TX</p>
+      <h1 class="hero-title">
+        Jared<br>
+        <span>Valdes</span>
+        Edits
+      </h1>
+      <p class="hero-sub">
+        Turning raw footage into content that actually hits. Short form, long form, gaming, brands — I make it slap.
+      </p>
+      <a href="#contact" class="hero-cta">Hire Me</a>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-inner">
+      <span class="ticker-item">Short Form <span>✦</span></span>
+      <span class="ticker-item">Long Form <span>✦</span></span>
+      <span class="ticker-item">Color Grading <span>✦</span></span>
+      <span class="ticker-item">Gaming Content <span>✦</span></span>
+      <span class="ticker-item">Brand Videos <span>✦</span></span>
+      <span class="ticker-item">Fast Turnaround <span>✦</span></span>
+      <span class="ticker-item">Short Form <span>✦</span></span>
+      <span class="ticker-item">Long Form <span>✦</span></span>
+      <span class="ticker-item">Color Grading <span>✦</span></span>
+      <span class="ticker-item">Gaming Content <span>✦</span></span>
+      <span class="ticker-item">Brand Videos <span>✦</span></span>
+      <span class="ticker-item">Fast Turnaround <span>✦</span></span>
+    </div>
+  </div>
+
+  <!-- REEL -->
+  <section class="reel" id="reel">
+    <p class="section-label">Showreel</p>
+    <h2 class="section-title">The Work</h2>
+    <div class="reel-placeholder">
+      <div class="play-btn">▶</div>
+      <p>Reel Coming Soon</p>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services" id="services">
+    <p class="section-label">What I Do</p>
+    <h2 class="section-title">Services</h2>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-number">01</div>
+        <h3 class="service-name">Short Form</h3>
+        <p class="service-desc">TikToks, Reels, Shorts. Scroll-stopping cuts that hook in the first 3 seconds and keep people watching till the end.</p>
+        <p class="service-price">Starting at $25</p>
+      </div>
+      <div class="service-card">
+        <div class="service-number">02</div>
+        <h3 class="service-name">Long Form</h3>
+        <p class="service-desc">YouTube videos, documentaries, VOD edits. Hours of footage cut into something people actually finish watching.</p>
+        <p class="service-price">Starting at $60</p>
+      </div>
+      <div class="service-card">
+        <div class="service-number">03</div>
+        <h3 class="service-name">Gaming Content</h3>
+        <p class="service-desc">Highlight reels, stream edits, tournament docs. I watch gaming content — so I know exactly what hits for your audience.</p>
+        <p class="service-price">Starting at $25</p>
+      </div>
+      <div class="service-card">
+        <div class="service-number">04</div>
+        <h3 class="service-name">Color Grading</h3>
+        <p class="service-desc">Cinematic color work that makes your footage look like it belongs on a screen 10x bigger. Mood, tone, atmosphere — dialed in.</p>
+        <p class="service-price">Let's talk</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="about-text">
+      <p class="section-label">About</p>
+      <h2 class="section-title" style="margin-bottom:2rem;">Who I Am</h2>
+      <p>I'm <strong>Jared Valdes</strong> — a video editor and Digital Cinematography student based in Dallas, TX. I edit for gamers, creators, and brands who are done looking amateur.</p>
+      <p>I don't just cut footage. I watch your content, understand your audience, and make edits that actually fit your vibe. Fast turnaround, clean results, no headaches.</p>
+      <p>Whether it's a 30-second TikTok or a 2-hour documentary — <strong>I got you.</strong></p>
+    </div>
+    <div class="about-stats">
+      <div class="stat">
+        <div class="stat-number">29+</div>
+        <div class="stat-label">Hours of Footage Cut</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">48H</div>
+        <div class="stat-label">Avg Turnaround</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">4K</div>
+        <div class="stat-label">Editing Capability</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">∞</div>
+        <div class="stat-label">Bad Videos Fixed</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <p class="section-label">Get In Touch</p>
+    <h2 class="contact-title">Let's Make It<br><span>Slap.</span></h2>
+    <p class="contact-sub">Bad video? Terrible edits? I fix that.</p>
+    <a href="mailto:your@email.com" class="contact-email">your@email.com</a>
+    <div class="contact-socials">
+      <a href="#">TikTok</a>
+      <a href="#">Instagram</a>
+      <a href="#">YouTube</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 <span>JaredValdesEdits</span></p>
+    <p>Dallas, TX <span>✦</span> Available for work</p>
+  </footer>
+
+</body>
+</html>
